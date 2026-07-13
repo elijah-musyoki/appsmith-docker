@@ -1,10 +1,10 @@
-# Local environment (contains secrets)
-.env
 
 # Docker volumes
-stacks/
+.env
+# Local environment (contains secrets)
 mongo-data/
+mongo-keyfile
 redis-data/
-
-# Research files
 research/
+# Research files
+stacks/
