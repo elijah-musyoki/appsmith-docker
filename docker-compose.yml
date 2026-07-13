@@ -1,0 +1,76 @@
+services:
+  appsmith:
+    image: index.docker.io/appsmith/appsmith-ee:${APPSMITH_VERSION:-latest}
+    container_name: appsmith
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "${APPSMITH_BIND:-0.0.0.0}:${APPSMITH_HTTP_PORT:-80}:80"
+      - "${APPSMITH_BIND:-0.0.0.0}:${APPSMITH_HTTPS_PORT:-443}:443"
+    volumes:
+      - ./stacks:/appsmith-stacks
+    environment:
+      APPSMITH_ENCRYPTION_PASSWORD: ${APPSMITH_ENCRYPTION_PASSWORD}
+      APPSMITH_ENCRYPTION_SALT: ${APPSMITH_ENCRYPTION_SALT}
+      APPSMITH_DB_URL: mongodb://${MONGO_USER:-appsmith}:${MONGO_PASSWORD}@database:27017/${MONGO_DB:-appsmith}?authSource=admin
+      # APPSMITH_REDIS_URL: ${APPSMITH_REDIS_URL}
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:80/api/v1/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 120s
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+
+  database:
+    image: mongo:${MONGO_VERSION:-7.0}
+    restart: unless-stopped
+    command: ["mongod", "--auth"]
+    ports:
+      - "127.0.0.1:27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-appsmith}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB:-appsmith}
+    volumes:
+      - ./mongo-data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet -u ${MONGO_USER:-appsmith} -p ${MONGO_PASSWORD} --authenticationDatabase admin
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_interval: 5s
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # cache:
+  #   image: redis:${REDIS_VERSION:-7-alpine}
+  #   restart: unless-stopped
+  #   command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}", "--maxmemory", "${REDIS_MAXMEMORY:-256mb}", "--maxmemory-policy", "${REDIS_MAXMEMORY_POLICY:-allkeys-lru}"]
+  #   ports:
+  #     - "127.0.0.1:6379:6379"
+  #   volumes:
+  #     - ./redis-data:/data
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "[ $$(redis-cli -a $${REDIS_PASSWORD} ping) = 'PONG' ]"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #     start_interval: 5s
+  #     start_period: 30s

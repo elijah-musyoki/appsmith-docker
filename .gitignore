@@ -1,0 +1,10 @@
+# Local environment (contains secrets)
+.env
+
+# Docker volumes
+stacks/
+mongo-data/
+redis-data/
+
+# Research files
+research/
