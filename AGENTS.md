@@ -20,11 +20,11 @@ N/A — Docker Compose project.
 |------|------|
 | Config | `.env.example` |
 | Services | `docker-compose.yml` |
-| Secrets | `openssl rand -base64 32` |
+| Secrets | `uv run generate-secrets.py` |
 
 ## Key Conventions
 - Secrets in `.env` — gitignored, never commit.
-- First deploy: `cp .env.example .env`, generate secrets with `openssl rand -base64 32`, then `docker compose up -d`.
+- First deploy: `uv run generate-secrets.py`, review `.env`, then `docker compose up -d`.
 - Update Appsmith: change `APPSMITH_VERSION` in `.env`, then `docker compose pull && docker compose up -d`.
 - Health check: `curl --fail http://localhost:80/api/v1/health`.
 - First boot runs migrations — give it a few minutes.
