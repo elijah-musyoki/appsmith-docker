@@ -1,6 +1,6 @@
 services:
   appsmith:
-    image: index.docker.io/appsmith/appsmith-ee:${APPSMITH_VERSION:-latest}
+    image: index.docker.io/appsmith/appsmith-ee:${APPSMITH_VERSION:-v2.2}
     container_name: appsmith
     restart: unless-stopped
     depends_on:

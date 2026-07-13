@@ -33,7 +33,7 @@ def build_env() -> str:
 # =============================================================================
 
 # --- Image Versions -----------------------------------------------------------
-APPSMITH_VERSION=latest
+APPSMITH_VERSION=v2.2
 MONGO_VERSION=7.0
 REDIS_VERSION=8.8.0-alpine
 
