@@ -16,7 +16,7 @@ services:
     environment:
       APPSMITH_ENCRYPTION_PASSWORD: ${APPSMITH_ENCRYPTION_PASSWORD}
       APPSMITH_ENCRYPTION_SALT: ${APPSMITH_ENCRYPTION_SALT}
-      APPSMITH_DB_URL: mongodb://${MONGO_USER:-appsmith}:${MONGO_PASSWORD}@database:27017/${MONGO_DB:-appsmith}?authSource=admin
+      APPSMITH_DB_URL: mongodb://${MONGODB_USERNAME:-appsmith}:${MONGODB_PASSWORD}@database:27017/${MONGO_DATABASE:-appsmith}?authSource=admin
       APPSMITH_REDIS_URL: ${APPSMITH_REDIS_URL}
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:80/api/v1/health || exit 1"]
@@ -42,9 +42,13 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-appsmith}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGO_DB:-appsmith}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE:-appsmith}
+      MONGO_DATABASE: ${MONGO_DATABASE:-appsmith}
+      MONGODB_USERNAME: ${MONGODB_USERNAME:-appsmith}
+      MONGODB_PASSWORD: ${MONGODB_PASSWORD}
     volumes:
       - ./mongo-data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh --quiet -u ${MONGO_USER:-appsmith} -p ${MONGO_PASSWORD} --authenticationDatabase admin
       interval: 10s

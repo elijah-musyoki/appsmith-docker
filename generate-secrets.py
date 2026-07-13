@@ -49,7 +49,9 @@ APPSMITH_ENCRYPTION_SALT={gen_hex()}
 # --- MongoDB (internal - stores all Appsmith data) ----------------------------
 MONGO_USER=appsmith
 MONGO_PASSWORD={gen_alphanumeric()}
-MONGO_DB=appsmith
+MONGO_DATABASE=appsmith
+MONGODB_USERNAME=appsmith
+MONGODB_PASSWORD={gen_alphanumeric()}
 
 # --- Redis (for caching/sessions) ---------------------------------------------
 REDIS_PASSWORD={gen_alphanumeric()}
