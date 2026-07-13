@@ -35,7 +35,7 @@ def build_env() -> str:
 # --- Image Versions -----------------------------------------------------------
 APPSMITH_VERSION=latest
 MONGO_VERSION=7.0
-REDIS_VERSION=7-alpine
+REDIS_VERSION=8.8.0-alpine
 
 # --- Ports (bind to localhost if behind a reverse proxy) ----------------------
 APPSMITH_HTTP_PORT=80
